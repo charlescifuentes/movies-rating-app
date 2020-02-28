@@ -1,11 +1,14 @@
 const express = require('express');
-//const connectDB = require('./config/db');
+const dotenv = require('dotenv');
+const connectDB = require('./config/db');
 const path = require('path');
+
+dotenv.config({ path: './config/config.env' });
 
 const app = express();
 
 // Conect Database
-//connectDB();
+connectDB();
 
 // Init Middleware
 app.use(express.json({ extended: false }));
@@ -16,7 +19,7 @@ app.get('/', function(req, res) {
 });
 
 //app.use('api/ratings', require('./routes/ratings'));
-//app.use('api/comments', require('./routes/commnents'));
+app.use('/api/comments', require('./routes/comments'));
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
@@ -30,4 +33,6 @@ if (process.env.NODE_ENV === 'production') {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () =>
+  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`)
+);
