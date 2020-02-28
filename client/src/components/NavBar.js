@@ -33,7 +33,16 @@ const NavBar = () => {
     <div className='nav-container'>
       <Navbar color='info' dark expand='md'>
         <Container>
-          <NavbarBrand href='/'>MOVIE RATING APP</NavbarBrand>
+          <NavbarBrand>
+            <NavLink
+              tag={RouterNavLink}
+              to='/'
+              exact
+              activeClassName='router-link-exact-active'
+            >
+              MOVIE RATING APP
+            </NavLink>
+          </NavbarBrand>
           <NavbarToggler onClick={toggle} />
           <Collapse isOpen={isOpen} navbar>
             <Nav className='mr-auto' navbar>

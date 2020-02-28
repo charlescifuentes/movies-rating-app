@@ -1,2 +1,1 @@
-This is an App for query a list of movies from "The Movie DB" and allow users give ratings and comments
-"# movies-rating-app" 
+Web Application that allows users to see a list of Movies from the "The Movie DB" by selecting a year of release, also give a rating and make comments for each movie
