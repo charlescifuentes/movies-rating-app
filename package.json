@@ -1,0 +1,24 @@
+{
+  "name": "movies-rating-app",
+  "version": "1.0.0",
+  "description": "This is an App for query a list of movies from \"The Movie DB\" and allow users give ratings and comments",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "clientinstall": "npm install --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "author": "Charles Cifuentes",
+  "license": "MIT",
+  "dependencies": {
+    "config": "^3.3.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.2"
+  },
+  "devDependencies": {
+    "concurrently": "^5.1.0",
+    "nodemon": "^2.0.2"
+  }
+}
