@@ -13,11 +13,6 @@ connectDB();
 // Init Middleware
 app.use(express.json({ extended: false }));
 
-// Define Routes
-app.get('/', function(req, res) {
-  res.send('Hello World!');
-});
-
 //app.use('api/ratings', require('./routes/ratings'));
 app.use('/api/comments', require('./routes/comments'));
 
