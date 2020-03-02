@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
   try {
     const newComment = new Comments({
       user: req.body.user,
-      comment: req.body
+      comment: req.body.comment
     });
 
     const comment = await newComment.save();

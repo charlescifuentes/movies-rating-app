@@ -17,7 +17,7 @@ const MoviesList = props => (
                 }
               }}
             >
-              <figure class='img-effect'>
+              <figure className='img-effect'>
                 <img
                   src={props.base_url + movie.poster_path}
                   width='100%'

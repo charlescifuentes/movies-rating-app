@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth0 } from '../react-auth0-spa';
 import {
   Container,
   Row,
@@ -18,12 +19,10 @@ const MoviesListDetail = props => {
     { autor: 'Charles Cifuentes', comment: 'This is an example comment' }
   ];
 
-  const initialFormState = {
-    autor: 'Charles Cifuenes',
-    comment: 'This is an example comment'
-  };
+  const initialFormState = { autor: '', comment: '' };
 
   const { movieData, base_url } = props.location.state;
+  const { user } = useAuth0();
   const [ratingValue, setRatingValue] = useState('');
   const [currentComent, setCurrentComment] = useState(initialFormState);
   const [comments, setComments] = useState(data);
@@ -39,8 +38,13 @@ const MoviesListDetail = props => {
   };
 
   const handleSubmit = e => {
+    const comment = {
+      autor: user.nickname,
+      comment: currentComent.comment
+    };
     e.preventDefault();
-    setComments([...comments, currentComent]);
+    setComments([...comments, comment]);
+    currentComent.comment = '';
   };
 
   return (
@@ -97,7 +101,7 @@ const MoviesListDetail = props => {
                     type='textarea'
                     name='comment'
                     id='comment'
-                    value={comments.comment}
+                    value={currentComent.comment}
                     onChange={handleChange}
                   ></Input>
                 </FormGroup>
