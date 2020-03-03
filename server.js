@@ -1,9 +1,9 @@
 const express = require('express');
-//const dotenv = require('dotenv');
+const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const path = require('path');
 
-//dotenv.config({ path: './config/config.env' });
+dotenv.config({ path: './config/config.env' });
 
 const app = express();
 
@@ -12,6 +12,17 @@ connectDB();
 
 // Init Middleware
 app.use(express.json({ extended: false }));
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method'
+  );
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+  res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+  next();
+});
 
 //app.use('api/ratings', require('./routes/ratings'));
 app.use('/api/comments', require('./routes/comments'));

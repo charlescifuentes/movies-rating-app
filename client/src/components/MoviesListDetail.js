@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '../react-auth0-spa';
+import axios from 'axios';
 import {
   Container,
   Row,
@@ -15,21 +16,33 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserEdit, faComment } from '@fortawesome/free-solid-svg-icons';
 
 const MoviesListDetail = props => {
-  const data = [
-    { autor: 'Charles Cifuentes', comment: 'This is an example comment' }
-  ];
-
   const initialFormState = { autor: '', comment: '' };
 
   const { movieData, base_url } = props.location.state;
   const { user } = useAuth0();
   const [ratingValue, setRatingValue] = useState('');
   const [currentComent, setCurrentComment] = useState(initialFormState);
-  const [comments, setComments] = useState(data);
+  const [comments, setComments] = useState([]);
+
+  useEffect(() => {
+    getComments();
+  }, [props]);
 
   const ratingChanged = newRating => {
     console.log(newRating);
     setRatingValue(newRating);
+  };
+
+  const getComments = async () => {
+    await axios
+      .get('/api/comments')
+      .then(function(response) {
+        console.log(response.data);
+        setComments(response.data);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
   };
 
   const handleChange = e => {
@@ -39,13 +52,28 @@ const MoviesListDetail = props => {
 
   const handleSubmit = e => {
     const comment = {
-      autor: user.nickname,
+      user: user.nickname,
       comment: currentComent.comment
     };
     e.preventDefault();
-    setComments([...comments, comment]);
+
+    axios
+      .post('/api/comments', {
+        user: comment.user,
+        comment: comment.comment
+      })
+      .then(function(response) {
+        console.log(response.data.data);
+        setComments([...comments, comment]);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+
     currentComent.comment = '';
   };
+
+  console.log(movieData);
 
   return (
     <Container className='py-5'>
@@ -118,7 +146,7 @@ const MoviesListDetail = props => {
                   comments.map((comment, index) => (
                     <li key={index} className='border-bottom border-white mt-3'>
                       <p>
-                        <FontAwesomeIcon icon={faUserEdit} /> {comment.autor}
+                        <FontAwesomeIcon icon={faUserEdit} /> {comment.user}
                       </p>
                       <p className='ml-4'>
                         <FontAwesomeIcon icon={faComment} /> {comment.comment}
