@@ -20,7 +20,7 @@ const MoviesListDetail = props => {
 
   const { movieData, base_url } = props.location.state;
   const { user } = useAuth0();
-  const [rating, setRating] = useState('');
+  const [rating, setRating] = useState('0');
   const [currentComent, setCurrentComment] = useState(initialFormState);
   const [comments, setComments] = useState([]);
 
