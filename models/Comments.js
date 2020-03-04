@@ -7,6 +7,9 @@ const CommentsSchema = mongoose.Schema({
   comment: {
     type: String
   },
+  movieID: {
+    type: String
+  },
   date: {
     type: Date,
     default: Date.now

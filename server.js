@@ -24,8 +24,8 @@ app.use((req, res, next) => {
   next();
 });
 
-//app.use('api/ratings', require('./routes/ratings'));
 app.use('/api/comments', require('./routes/comments'));
+app.use('/api/ratings', require('./routes/ratings'));
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {

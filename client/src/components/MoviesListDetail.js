@@ -20,24 +20,19 @@ const MoviesListDetail = props => {
 
   const { movieData, base_url } = props.location.state;
   const { user } = useAuth0();
-  const [ratingValue, setRatingValue] = useState('');
+  const [rating, setRating] = useState('');
   const [currentComent, setCurrentComment] = useState(initialFormState);
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
     getComments();
-  }, [props]);
-
-  const ratingChanged = newRating => {
-    console.log(newRating);
-    setRatingValue(newRating);
-  };
+    getRating();
+  }, []);
 
   const getComments = async () => {
     await axios
-      .get('/api/comments')
+      .get(`http://localhost:5000/api/comments/${movieData.id}`)
       .then(function(response) {
-        console.log(response.data);
         setComments(response.data);
       })
       .catch(function(error) {
@@ -53,14 +48,16 @@ const MoviesListDetail = props => {
   const handleSubmit = e => {
     const comment = {
       user: user.nickname,
-      comment: currentComent.comment
+      comment: currentComent.comment,
+      movieId: movieData.id
     };
     e.preventDefault();
 
     axios
-      .post('/api/comments', {
+      .post('http://localhost:5000/api/comments', {
         user: comment.user,
-        comment: comment.comment
+        comment: comment.comment,
+        movieid: comment.movieId
       })
       .then(function(response) {
         console.log(response.data.data);
@@ -73,7 +70,38 @@ const MoviesListDetail = props => {
     currentComent.comment = '';
   };
 
-  console.log(movieData);
+  const getRating = async () => {
+    await axios
+      .get(`http://localhost:5000/api/ratings/${user.nickname}/${movieData.id}`)
+      .then(function(response) {
+        setRating(response.data[0].rating);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  };
+
+  const ratingChange = value => {
+    const data = {
+      user: user.nickname,
+      rating: value,
+      movieId: movieData.id
+    };
+
+    axios
+      .post('http://localhost:5000/api/ratings', {
+        user: data.user,
+        rating: data.rating,
+        movieid: data.movieId
+      })
+      .then(function(response) {
+        console.log(response.data.data);
+        setRating(data.rating);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  };
 
   return (
     <Container className='py-5'>
@@ -109,11 +137,11 @@ const MoviesListDetail = props => {
                 Give your Rating:
                 <ReactStars
                   count={5}
-                  onChange={ratingChanged}
+                  onChange={ratingChange}
                   size={24}
                   color2={'#ffd700'}
                 />
-                <small>Your Current Rating: {ratingValue}</small>
+                <small>Your Current Rating: {rating}</small>
               </h4>
             </div>
           </Col>
