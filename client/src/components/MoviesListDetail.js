@@ -36,7 +36,7 @@ const MoviesListDetail = props => {
 
   const getComments = async () => {
     await axios
-      .get(`http://localhost:5000/api/comments/${movieData.id}`)
+      .get(`/api/comments/${movieData.id}`)
       .then(function(response) {
         setComments(response.data);
         console.log(response.data);
@@ -60,7 +60,7 @@ const MoviesListDetail = props => {
     e.preventDefault();
 
     axios
-      .post('http://localhost:5000/api/comments', {
+      .post('/api/comments', {
         user: comment.user,
         comment: comment.comment,
         movieid: comment.movieId
@@ -77,7 +77,7 @@ const MoviesListDetail = props => {
 
   const commentDelete = async value => {
     await axios
-      .delete(`http://localhost:5000/api/comments/${value}`)
+      .delete(`/api/comments/${value}`)
       .then(function(response) {
         console.log(response.data);
         setComments(comments.filter(comment => comment._id !== value));
@@ -89,7 +89,7 @@ const MoviesListDetail = props => {
 
   const getRating = async () => {
     await axios
-      .get(`http://localhost:5000/api/ratings/${user.nickname}/${movieData.id}`)
+      .get(`/api/ratings/${user.nickname}/${movieData.id}`)
       .then(function(response) {
         console.log(response.data);
         response.data.length > 0
@@ -109,7 +109,7 @@ const MoviesListDetail = props => {
     };
 
     axios
-      .post('http://localhost:5000/api/ratings', {
+      .post('/api/ratings', {
         user: data.user,
         rating: data.rating,
         movieid: data.movieId
@@ -131,7 +131,7 @@ const MoviesListDetail = props => {
     };
 
     axios
-      .put(`http://localhost:5000/api/ratings/${rating._id}`, {
+      .put(`/api/ratings/${rating._id}`, {
         user: data.user,
         rating: data.rating,
         movieid: data.movieId
@@ -147,7 +147,7 @@ const MoviesListDetail = props => {
 
   const ratingDelete = async () => {
     await axios
-      .delete(`http://localhost:5000/api/ratings/${rating._id}`)
+      .delete(`/api/ratings/${rating._id}`)
       .then(function(response) {
         console.log(response.data);
         setRating({ rating: 'No Value' });
