@@ -16,12 +16,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserEdit, faComment } from '@fortawesome/free-solid-svg-icons';
 
 const MoviesListDetail = props => {
-  const initialFormState = { autor: '', comment: '' };
 
   const { movieData, base_url } = props.location.state;
   const { user } = useAuth0();
-  const [rating, setRating] = useState('0');
-  const [currentComent, setCurrentComment] = useState(initialFormState);
+  const [rating, setRating] = useState("");
+  const [currentComent, setCurrentComment] = useState("");
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
@@ -42,13 +41,13 @@ const MoviesListDetail = props => {
 
   const handleChange = e => {
     e.persist();
-    setCurrentComment({ ...currentComent, [e.target.name]: e.target.value });
+    setCurrentComment(e.target.value);
   };
 
   const handleSubmit = e => {
     const comment = {
       user: user.nickname,
-      comment: currentComent.comment,
+      comment: currentComent,
       movieId: movieData.id
     };
     e.preventDefault();
@@ -62,19 +61,19 @@ const MoviesListDetail = props => {
       .then(function(response) {
         console.log(response.data.data);
         setComments([...comments, comment]);
+        setCurrentComment("");
       })
       .catch(function(error) {
         console.log(error);
       });
-
-    currentComent.comment = '';
   };
 
   const getRating = async () => {
     await axios
       .get(`http://localhost:5000/api/ratings/${user.nickname}/${movieData.id}`)
       .then(function(response) {
-        setRating(response.data[0].rating);
+        setRating(response.data[0]);
+        console.log(response.data[0])
       })
       .catch(function(error) {
         console.log(error);
@@ -95,13 +94,35 @@ const MoviesListDetail = props => {
         movieid: data.movieId
       })
       .then(function(response) {
-        console.log(response.data.data);
+        console.log(response.data);
         setRating(data.rating);
       })
       .catch(function(error) {
         console.log(error);
       });
   };
+
+  const ratingUpdate = value => {
+    const data = {
+      user: user.nickname,
+      rating: value,
+      movieId: movieData.id
+    };
+
+    axios
+      .put(`http://localhost:5000/api/ratings/${rating._id}`, {
+        user: data.user,
+        rating: data.rating,
+        movieid: data.movieId
+      })
+      .then(function(response) {
+        console.log(response.data);
+        setRating(data.rating);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  }
 
   return (
     <Container className='py-5'>
@@ -137,11 +158,11 @@ const MoviesListDetail = props => {
                 Give your Rating:
                 <ReactStars
                   count={5}
-                  onChange={ratingChange}
+                  onChange={rating ? ratingUpdate : ratingChange}
                   size={24}
                   color2={'#ffd700'}
                 />
-                <small>Your Current Rating: {rating}</small>
+                <small>Your Current Rating: {rating.rating}</small>
               </h4>
             </div>
           </Col>
@@ -157,7 +178,7 @@ const MoviesListDetail = props => {
                     type='textarea'
                     name='comment'
                     id='comment'
-                    value={currentComent.comment}
+                    value={currentComent}
                     onChange={handleChange}
                   ></Input>
                 </FormGroup>

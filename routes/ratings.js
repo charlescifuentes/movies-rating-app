@@ -32,8 +32,6 @@ router.post('/', async (req, res) => {
     });
 
     const rating = await newRating.save();
-    console.log(newRating);
-    console.log(rating);
 
     return res.status(201).json({
       success: true,
@@ -41,9 +39,30 @@ router.post('/', async (req, res) => {
     });
   } catch (err) {
     return res.status(500).json({
-      success: false,
+      message: "Rating Created",
       error: 'Server Error'
     });
+  }
+});
+
+//@route    PUT api/ratings
+//@desc     Update rating
+//@acces    Public
+router.put('/:id', async (req, res) => {
+  try {
+    const rating = await Ratings.findOneAndUpdate({ _id: req.params.id }, {
+      user: req.body.user,
+      rating: req.body.rating,
+      movieID: req.body.movieid
+    })
+
+    return res.status(201).json({
+      message: "Rating updated",
+      data: rating
+    });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send('Server Error');
   }
 });
 
