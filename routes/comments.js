@@ -56,4 +56,20 @@ router.get('/:movieid', async (req, res) => {
   }
 });
 
+//@route    DELETE api/comments/:id
+//@desc     Delete rating
+//@acces    Public
+router.delete('/:id', async (req, res) => {
+  try {
+    const comment = await Comments.findByIdAndDelete({ _id: req.params.id });
+    return res.status(201).json({
+      message: 'Comment deleted',
+      data: comment
+    });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;

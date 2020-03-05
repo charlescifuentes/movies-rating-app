@@ -39,7 +39,7 @@ router.post('/', async (req, res) => {
     });
   } catch (err) {
     return res.status(500).json({
-      message: "Rating Created",
+      message: 'Rating Created',
       error: 'Server Error'
     });
   }
@@ -50,16 +50,32 @@ router.post('/', async (req, res) => {
 //@acces    Public
 router.put('/:id', async (req, res) => {
   try {
-    const rating = await Ratings.findOneAndUpdate({ _id: req.params.id }, {
-      user: req.body.user,
-      rating: req.body.rating,
-      movieID: req.body.movieid
-    })
+    const rating = await Ratings.findOneAndUpdate(
+      { _id: req.params.id },
+      {
+        user: req.body.user,
+        rating: req.body.rating,
+        movieID: req.body.movieid
+      }
+    );
 
     return res.status(201).json({
-      message: "Rating updated",
+      message: 'Rating updated',
       data: rating
     });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+//@route    DELETE api/ratings/:id
+//@desc     Delete rating
+//@acces    Public
+router.delete('/:id', async (req, res) => {
+  try {
+    await Ratings.findByIdAndDelete({ _id: req.params.id });
+    return res.status(201).send('Rating deleted');
   } catch (err) {
     console.log(err.message);
     res.status(500).send('Server Error');

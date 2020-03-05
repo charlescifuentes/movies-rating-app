@@ -13,26 +13,33 @@ import {
 } from 'reactstrap';
 import ReactStars from 'react-rating-stars-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserEdit, faComment } from '@fortawesome/free-solid-svg-icons';
+import {
+  faUserEdit,
+  faComment,
+  faEdit
+} from '@fortawesome/free-solid-svg-icons';
 
 const MoviesListDetail = props => {
-
   const { movieData, base_url } = props.location.state;
   const { user } = useAuth0();
-  const [rating, setRating] = useState("");
-  const [currentComent, setCurrentComment] = useState("");
+  const [rating, setRating] = useState('');
+  const [currentComent, setCurrentComment] = useState('');
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
     getComments();
+  }, [comments.comment]);
+
+  useEffect(() => {
     getRating();
-  }, []);
+  }, [rating.rating]);
 
   const getComments = async () => {
     await axios
       .get(`http://localhost:5000/api/comments/${movieData.id}`)
       .then(function(response) {
         setComments(response.data);
+        console.log(response.data);
       })
       .catch(function(error) {
         console.log(error);
@@ -44,7 +51,7 @@ const MoviesListDetail = props => {
     setCurrentComment(e.target.value);
   };
 
-  const handleSubmit = e => {
+  const insertComment = e => {
     const comment = {
       user: user.nickname,
       comment: currentComent,
@@ -60,8 +67,20 @@ const MoviesListDetail = props => {
       })
       .then(function(response) {
         console.log(response.data.data);
-        setComments([...comments, comment]);
-        setCurrentComment("");
+        setComments([...comments, response.data.data]);
+        setCurrentComment('');
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  };
+
+  const commentDelete = async value => {
+    await axios
+      .delete(`http://localhost:5000/api/comments/${value}`)
+      .then(function(response) {
+        console.log(response.data);
+        setComments(comments.filter(comment => comment._id !== value));
       })
       .catch(function(error) {
         console.log(error);
@@ -72,15 +91,17 @@ const MoviesListDetail = props => {
     await axios
       .get(`http://localhost:5000/api/ratings/${user.nickname}/${movieData.id}`)
       .then(function(response) {
-        setRating(response.data[0]);
-        console.log(response.data[0])
+        console.log(response.data);
+        response.data.length > 0
+          ? setRating(response.data[0])
+          : setRating({ rating: 'No Value' });
       })
       .catch(function(error) {
         console.log(error);
       });
   };
 
-  const ratingChange = value => {
+  const insertRating = value => {
     const data = {
       user: user.nickname,
       rating: value,
@@ -117,12 +138,24 @@ const MoviesListDetail = props => {
       })
       .then(function(response) {
         console.log(response.data);
-        setRating(data.rating);
+        setRating(response.data);
       })
       .catch(function(error) {
         console.log(error);
       });
-  }
+  };
+
+  const ratingDelete = async () => {
+    await axios
+      .delete(`http://localhost:5000/api/ratings/${rating._id}`)
+      .then(function(response) {
+        console.log(response.data);
+        setRating({ rating: 'No Value' });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  };
 
   return (
     <Container className='py-5'>
@@ -158,11 +191,24 @@ const MoviesListDetail = props => {
                 Give your Rating:
                 <ReactStars
                   count={5}
-                  onChange={rating ? ratingUpdate : ratingChange}
+                  onChange={
+                    rating.rating === 'No Value' ? insertRating : ratingUpdate
+                  }
                   size={24}
                   color2={'#ffd700'}
                 />
-                <small>Your Current Rating: {rating.rating}</small>
+                <small>
+                  Your Current Rating: {rating.rating}
+                  {' - '}
+                  <Button
+                    color='warning'
+                    size='sm'
+                    onClick={() => ratingDelete()}
+                  >
+                    <FontAwesomeIcon icon={faEdit} size='xs' />
+                    Borrar
+                  </Button>
+                </small>
               </h4>
             </div>
           </Col>
@@ -171,9 +217,9 @@ const MoviesListDetail = props => {
           <Col md='6'>
             <div className='text-white mb-3'>
               <h3>Insert a Comment:</h3>
-              <Form onSubmit={handleSubmit}>
+              <Form onSubmit={insertComment}>
                 <FormGroup>
-                  <Label>Inser a Comment</Label>
+                  <Label>Insert a Comment</Label>
                   <Input
                     type='textarea'
                     name='comment'
@@ -198,7 +244,16 @@ const MoviesListDetail = props => {
                         <FontAwesomeIcon icon={faUserEdit} /> {comment.user}
                       </p>
                       <p className='ml-4'>
-                        <FontAwesomeIcon icon={faComment} /> {comment.comment}
+                        <FontAwesomeIcon icon={faComment} /> {comment.comment}{' '}
+                        {' - '}
+                        <Button
+                          color='warning'
+                          size='sm'
+                          onClick={() => commentDelete(comment._id)}
+                        >
+                          <FontAwesomeIcon icon={faEdit} size='xs' />
+                          Borrar
+                        </Button>
                       </p>
                     </li>
                   ))
