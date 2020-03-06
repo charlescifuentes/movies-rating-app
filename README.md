@@ -13,3 +13,13 @@ You can see the app in production here => https://movies-rating-app.herokuapp.co
 
 Web application developed in the Backend with Node.js/Express.js, Database with MongoDB, and in the frontend with React.js, authetication provide by Auth0 and all the list of movies are query from the "The Movie DB API Rest"
 
+#Install server dependencies
+-npm install
+
+#Install client dependencies
+-cd client
+-npm install
+
+#For running backend and frontend at the same time
+-npm run dev
+
