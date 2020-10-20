@@ -7,7 +7,7 @@ You can see the app in production here => https://movies-rating-app.herokuapp.co
 - First Log in if you already have an account or Sign Up to create a new Account
 - You can check your Profile that is provide from Auth0
 - You can select a list of movies for a year of release
-- You can clic on any movie to see the details
+- You can click on any movie to see the details
 - You can set a rating an make comments in any movie
 - You can logout, if you log in again, all you ratings and comments will be available
 
